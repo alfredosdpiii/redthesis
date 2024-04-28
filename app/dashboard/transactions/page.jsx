@@ -11,9 +11,11 @@ export default async function Transactions() {
 
   return (
     <div className="h-screen w-full bg-white flex justify-center items-center text-black">
-      <Suspense fallback={<div>Loading...</div>}>
-        <TransactionsList transactions={transactions} />
-      </Suspense>
+      <div className="h-full w-full overflow-y-auto">
+        <Suspense fallback={<div>Loading...</div>}>
+          <TransactionsList transactions={transactions} />
+        </Suspense>
+      </div>
     </div>
   );
 }
