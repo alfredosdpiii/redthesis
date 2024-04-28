@@ -1,8 +1,8 @@
-import LoginForm from "../ui/login/loginForm/loginForm";
+import LoginForm from "../components/LoginForm";
 
 const LoginPage = () => {
   return (
-    <div className="bg-red">
+    <div>
       <LoginForm />
     </div>
   );

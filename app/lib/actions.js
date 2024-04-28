@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { Product, User } from "./models";
+import { Product, User, Transaction } from "./models";
 import { connectToDB } from "./utils";
 import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
@@ -164,5 +164,61 @@ export const authenticate = async (prevState, formData) => {
       return "Wrong Credentials";
     }
     throw err;
+  }
+};
+
+export const fetchProducts = async () => {
+  try {
+    connectToDB();
+    const products = await Product.find();
+    return { products };
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to fetch products!");
+  }
+};
+
+export const createTransaction = async (productIDS, userID) => {
+  try {
+    connectToDB();
+    const newTransaction = new Transaction({
+      userID: userID,
+      products: productIDS,
+      date: Date.now(),
+    });
+
+    console.log(newTransaction);
+
+    await newTransaction.save();
+    return true;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to create transaction!");
+  }
+};
+
+export const getUserTransactions = async (userID) => {
+  revalidatePath("/dashboard/transactions");
+  try {
+    console.log(userID);
+    connectToDB();
+    const transactions = await Transaction.find({ userID: userID });
+    console.log("hello", transactions);
+    return { transactions };
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to fetch transactions!");
+  }
+};
+
+export const fetchSpecificProduct = async (id) => {
+  try {
+    connectToDB();
+    const product = await Product.find({ _id: id });
+    console.log("helloPRODUCT", product);
+    return { product };
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to fetch products!");
   }
 };

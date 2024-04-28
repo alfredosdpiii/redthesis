@@ -1,27 +1,18 @@
-import { cards } from "../lib/data";
-import Card from "../ui/dashboard/card/card";
-import Chart from "../ui/dashboard/chart/chart";
-import styles from "../ui/dashboard/dashboard.module.css";
-import Rightbar from "../ui/dashboard/rightbar/rightbar";
-import Transactions from "../ui/dashboard/transactions/transactions";
+"use server";
+import { fetchProducts } from "../lib/actions";
+import { Suspense } from "react";
+import Products from "../components/Products";
+import { auth } from "../auth";
 
-const Dashboard = () => {
+export default async function Dashboard() {
+  const products = await fetchProducts();
+  const session = await auth();
+
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.main}>
-        <div className={styles.cards}>
-          {cards.map((item) => (
-            <Card item={item} key={item.id} />
-          ))}
-        </div>
-        <Transactions />
-        <Chart />
-      </div>
-      <div className={styles.side}>
-        <Rightbar />
-      </div>
+    <div className="h-screen w-full bg-white flex justify-center items-center">
+      <Suspense fallback={<div>Loading... </div>}>
+        <Products products={products.products} session={session} />
+      </Suspense>
     </div>
   );
-};
-
-export default Dashboard;
+}

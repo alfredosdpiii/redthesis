@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { uuid } from "uuidv4";
 
 const userSchema = new mongoose.Schema(
   {
@@ -36,15 +37,19 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const productSchema = new mongoose.Schema(
   {
-    title: {
+    apparatus: {
       type: String,
       required: true,
       unique: true,
+    },
+    cat: {
+      type: String,
+      required: true,
     },
     desc: {
       type: String,
@@ -55,24 +60,49 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-    stock: {
+    quantity: {
       type: Number,
       required: true,
       min: 0,
     },
-    img: {
-      type: String,
-    },
-    color: {
+    date: {
       type: String,
     },
     size: {
       type: String,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
+);
+
+const transactionSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: String,
+      default: () => uuid(),
+    },
+    userID: {
+      type: String,
+      required: true,
+    },
+    date: {
+      type: String,
+    },
+    products: {
+      type: Array,
+      required: true,
+    },
+    approved: {
+      type: Boolean,
+      default: "false",
+    },
+  },
+  { timestamps: true },
 );
 
 export const User = mongoose.models.User || mongoose.model("User", userSchema);
 export const Product =
   mongoose.models.Product || mongoose.model("Product", productSchema);
+export const Transaction =
+  mongoose.models.Transaction ||
+  mongoose.model("Transaction", transactionSchema);
